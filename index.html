@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligence Designed To Evolve</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- ALL CSS DESIGN IS NOW SAFELY INSIDE THIS TAG --- */
+        :root {
+            --bg: #000000; --text: #ffffff; --muted: #8e8e8e; --nav-text: #2e2e2e;
+            --pill-dark: #28282a; --sign-in-text: #c8c8c8; --nav-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+            --trust-bg: #28282a; --trust-border: rgba(255, 255, 255, 0.4); --trust-text: #c4c2c3;
+            --font-sans: "Inter", "Segoe UI", system-ui, sans-serif;
+            --font-display: "BubbledotICG-FinePos", monospace;
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: var(--font-sans); overflow: hidden; height: 100vh; }
+        
+        .bg { position: absolute; inset: 0; background: #000; overflow: hidden; z-index: 0; pointer-events: none; }
+        .bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+
+        .page { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding: 2vh 2vw; height: 100vh; overflow: hidden; }
+        .desktop-only { display: flex; } .mobile-only { display: none; } .hidden { display: none !important; }
+
+        header { width: 100%; max-width: 720px; display: flex; align-items: center; justify-content: center; gap: 2vw; flex-shrink: 0; animation: slideDown 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        
+        .logo-btn { width: 45px; height: 45px; border-radius: 50%; background: #fff; border: none; box-shadow: var(--nav-shadow); display: grid; place-items: center; }
+        
+        .nav-pill { background: #fff; height: 45px; max-width: 430px; flex: 1; border-radius: 999px; padding: 4px 8px; display: flex; align-items: center; justify-content: space-around; }
+        .nav-pill a { text-decoration: none; color: var(--nav-text); font-weight: 500; font-size: 14px; opacity: 0.5; transition: 0.3s; padding: 4px 10px; }
+        .nav-pill a:hover { opacity: 0.75; } .nav-pill a.active { opacity: 1; }
+
+        .sign-in { height: 45px; background: var(--pill-dark); color: var(--sign-in-text); border: none; border-radius: 999px; padding: 0 24px; font-weight: 500; font-size: 14px; cursor: pointer; }
+        
+        .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; max-width: 900px; width: 100%; }
+        
+        .trust-row { display: inline-flex; align-items: center; margin-bottom: 2vh; --trust-size: 38px; }
+        .avatars { display: flex; }
+        .avatar-ring { width: var(--trust-size); height: var(--trust-size); background: var(--trust-bg); border: 1px solid var(--trust-border); border-radius: 50%; padding: 5px; }
+        .avatar-ring .inner { width: 100%; height: 100%; background: #fff; border-radius: 50%; display: grid; place-items: center; color: #111; font-size: 14px; }
+        .a1 { z-index: 1; } .a2 { z-index: 2; margin-left: -15px; } .a3 { z-index: 4; margin-left: -15px; }
+        .trust-pill { height: var(--trust-size); background: var(--trust-bg); border: 1px solid var(--trust-border); border-radius: 999px; display: flex; align-items: center; margin-left: -15px; z-index: 3; padding: 0 16px 0 22px; color: var(--trust-text); font-size: 12px; font-weight: 500;}
+
+        .headline { font-family: var(--font-display); font-size: clamp(28px, 6vw, 65px); letter-spacing: -0.04em; margin: 0; color: #fff; font-weight: normal; }
+        .anim-line { display: inline-block; opacity: 0; transform: translateY(14px); animation: headlineFade 0.85s forwards; animation-delay: var(--d-line); }
+        
+        .subhead { max-width: 500px; font-size: 15px; color: #d0d0d0; opacity: 0.8; line-height: 1.5; margin: 16px 0 0 0; }
+
+        .skill-ui { margin-top: 3vh; width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; }
+        .input-section { display: flex; gap: 12px; width: 100%; justify-content: center; }
+        .dark-input { background: rgba(40, 40, 42, 0.8); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 20px; border-radius: 999px; font-family: var(--font-sans); font-size: 14px; outline: none; }
+        select.dark-input { flex: 1; max-width: 350px; cursor: pointer; }
+        select.dark-input option { background: #111; color: #fff; }
+        
+        .cta-pill { background: #fff; color: #000; border: none; cursor: pointer; font-weight: 600; font-size: 14px; padding: 12px 25px; border-radius: 999px; transition: 0.3s; }
+        .cta-pill:hover:not(:disabled) { transform: translateY(-2px); } .cta-pill:disabled { opacity: 0.5; }
+
+        #result-section { margin-top: 25px; width: 100%; text-align: left; background: rgba(15, 15, 15, 0.8); border: 1px solid var(--trust-border); padding: 20px 24px; border-radius: 16px; backdrop-filter: blur(12px); }
+        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .result-header h3 { margin: 0; font-size: 15px; color: #fff; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .badge.intermediate { background: rgba(243, 156, 18, 0.2); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.5); }
+        .badge.advanced { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.5); }
+        #challenge-text { font-size: 14px; color: #d0d0d0; line-height: 1.6; min-height: 45px; margin:0; }
+
+        #loading { display: flex; align-items: center; gap: 12px; margin-top: 25px; }
+        .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .submit-row { display: flex; gap: 10px; margin-top: 15px; } .submit-btn { background: #fff; color: #000; border: none; padding: 0 16px; border-radius: 999px; font-weight: 600; cursor: pointer; }
+
+        .stats { width: 100%; max-width: 900px; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; margin-bottom: 2vh; }
+        .stat-val { display: flex; align-items: baseline; justify-content: center; gap: 4px; font-size: 22px; color: #fff; }
+        .stat-val .icon { font-family: var(--font-display); } .stat-label { color: var(--muted); font-size: 12px; }
+
+        .anim { opacity: 0; transform: translateY(20px); animation: reveal 0.85s forwards; animation-delay: var(--d); }
+
+        @keyframes headlineFade { to { opacity: 1; transform: translateY(0); } }
+        @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 720px) {
+            .desktop-only { display: none; } .mobile-only { display: block; }
+            .headline { font-size: 35px; } .stats { grid-template-columns: 1fr 1fr; gap: 15px; }
+            .input-section { flex-direction: column; } select.dark-input, .cta-pill { width: 100%; max-width:100%; }
+            header { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Video Background -->
+    <div class="bg">
+        <video class="bg-video" autoplay muted loop playsinline>
+            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4" type="video/mp4" />
+        </video>
+    </div>
+
+    <div class="page">
+        <!-- Header -->
+        <header>
+            <!-- Replaced broken image link with a built-in icon so it works instantly -->
+            <button class="logo-btn"><i class="fa-solid fa-bolt" style="font-size: 20px; color: black;"></i></button>
+            <nav class="nav-pill desktop-only">
+                <a href="#" class="active">Home</a><a href="#">Product</a><a href="#">Case Studies</a>
+            </nav>
+            <button class="sign-in desktop-only">Sign in</button>
+        </header>
+
+        <!-- Main Interface -->
+        <main class="hero">
+            <div class="trust-row anim" style="--d: 0.1s;">
+                <div class="avatars">
+                    <div class="avatar-ring a1"><div class="inner"><i class="fa-brands fa-microsoft"></i></div></div>
+                    <div class="avatar-ring a2"><div class="inner"><i class="fa-brands fa-amazon"></i></div></div>
+                    <div class="avatar-ring a3"><div class="inner"><i class="fa-brands fa-google"></i></div></div>
+                </div>
+                <div class="trust-pill">Trusted by 2000+ Enterprises</div>
+            </div>
+
+            <h1 class="headline">
+                <span class="anim-line" style="--d-line: 0.2s;">Intelligence</span><br>
+                <span class="anim-line" style="--d-line: 0.4s;">Designed To Evolve</span>
+            </h1>
+            <p class="subhead anim" style="--d: 0.5s;">Build applications that reason, adapt and collaborate.</p>
+
+            <!-- SkillBridge App Logic -->
+            <div class="skill-ui anim" style="--d: 0.6s;">
+                <div class="input-section">
+                    <select id="skillSelect" class="dark-input">
+                        <option value="default">-- Choose a Skill --</option>
+                        <option value="python">Python for Data Science (NPTEL)</option>
+                        <option value="java">Java Object-Oriented</option>
+                        <option value="c">C Programming</option>
+                    </select>
+                    <button onclick="analyzeSkill()" id="generateBtn" class="cta-pill">Get Started</button>
+                </div>
+
+                <div id="loading" class="hidden">
+                    <div class="spinner"></div><p style="color:#8e8e8e; font-size:13px;">Analyzing requirements...</p>
+                </div>
+
+                <div id="result-section" class="hidden">
+                    <div class="result-header">
+                        <h3>Production Architecture</h3>
+                        <span id="difficulty-badge" class="badge"></span>
+                    </div>
+                    <p id="challenge-text"></p>
+                    
+                    <div id="submission-area" class="hidden">
+                        <div class="submit-row">
+                            <input type="text" placeholder="GitHub Repository URL..." class="dark-input" style="flex:1;">
+                            <button class="submit-btn" onclick="alert('Submitted for review!')">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Stats -->
+        <footer class="stats">
+            <div class="anim" style="--d: 0.7s;"><div class="stat-val"><span class="icon">&lt;</span>120ms</div><div class="stat-label">Inference Time</div></div>
+            <div class="anim" style="--d: 0.8s;"><div class="stat-val"><span class="icon">%</span>99.99%</div><div class="stat-label">Platform Uptime</div></div>
+            <div class="anim" style="--d: 0.9s;"><div class="stat-val"><span class="icon">*</span>24/7</div><div class="stat-label">Runtime</div></div>
+            <div class="anim" style="--d: 1.0s;"><div class="stat-val"><span class="icon">#</span>2.4M</div><div class="stat-label">Context Windows</div></div>
+        </footer>
+    </div>
+
+    <script>
+        /* --- ALL JAVASCRIPT LOGIC IS NOW SAFELY INSIDE THIS TAG --- */
+        const database = {
+            python: {
+                text: "Your task is to download a messy CSV of local weather data. Write a script using Pandas to clean null values and graph the weekly temperature using Matplotlib.",
+                difficulty: "intermediate"
+            },
+            java: {
+                text: "Architect a basic Neo-banking terminal application that handles deposits, withdrawals, and utilizes string comparisons for secure password validation.",
+                difficulty: "advanced"
+            },
+            c: {
+                text: "Write a C program that dynamically allocates memory for an array of structs, sorts them using a custom algorithm, and frees the memory without leaks.",
+                difficulty: "advanced"
+            }
+        };
+
+        let i = 0; let currentText = "";
+
+        function typeWriter() {
+            if (i < currentText.length) {
+                document.getElementById("challenge-text").innerHTML += currentText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 30);
+            } else {
+                document.getElementById("submission-area").classList.remove("hidden");
+            }
+        }
+
+        function analyzeSkill() {
+            const skill = document.getElementById("skillSelect").value;
+            if (skill === "default") { alert("Please select a skill!"); return; }
+
+            document.getElementById("result-section").classList.add("hidden");
+            document.getElementById("submission-area").classList.add("hidden");
+            document.getElementById("challenge-text").innerHTML = "";
+            document.getElementById("generateBtn").disabled = true;
+            document.getElementById("loading").classList.remove("hidden");
+            i = 0;
+
+            setTimeout(() => {
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("generateBtn").disabled = false;
+                
+                currentText = database[skill].text;
+                document.getElementById("difficulty-badge").className = "badge " + database[skill].difficulty;
+                document.getElementById("difficulty-badge").innerText = database[skill].difficulty.toUpperCase();
+
+                document.getElementById("result-section").classList.remove("hidden");
+                typeWriter();
+            }, 1000); 
+        }
+    </script>
+</body>
+</html>
